@@ -30,6 +30,7 @@ Frontend: HTML, CSS, Bootstrap
 Deployment: Vercel (frontend) & Node.js backend
 
 📸Pictures
+
 🔐 Login Page
 <img width="1904" height="887" alt="image" src="https://github.com/user-attachments/assets/1511775c-8881-49b9-8ef1-8a58691d820b" />
 
@@ -51,4 +52,4 @@ Improve user experience with animations and accessibility features
 
 🌐 Live Demo https://journaling-fqhs-git-main-sai-pooja-reddy-palles-projects.vercel.app
 
-🔗 Check it out here https://journaling-fqhs-git-main-sai-pooja-reddy-palles-projects.vercel.app
+🔗 Check it out here
