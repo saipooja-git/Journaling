@@ -21,8 +21,8 @@
 
 <body>
   <div class="text-end p-2 d-flex gap-2 justify-content-end">
-    <a href="/Frontend/Post.html" class="btn btn-primary">New Post</a>
-    <a href="/Frontend/Login.html" class="btn btn-danger" id="logoutBtn">Logout</a>
+    <a href="./Post.html" class="btn btn-primary">New Post</a>
+    <a href="./Login.html" class="btn btn-danger" id="logoutBtn">Logout</a>
   </div>
 
   <div class="container py-3">
@@ -43,13 +43,19 @@
   ></script>
 
   <script>
-const API_BASE = "https://mydiary-backend.onrender.com";
+    // Use the same backend your Post page uses
+    const API_BASE = "http://localhost:3000";
 
     function el(tag, className, text) {
       const e = document.createElement(tag);
       if (className) e.className = className;
       if (text !== undefined && text !== null) e.textContent = text;
       return e;
+    }
+
+    function truncate(str = "", len = 200) {
+      const s = String(str);
+      return s.length > len ? s.slice(0, len - 1) + "…" : s;
     }
 
     async function loadPosts() {
@@ -83,21 +89,21 @@ const API_BASE = "https://mydiary-backend.onrender.com";
 
         data.forEach((p) => {
           const card = el("div", "Post card p-3 mb-3 shadow-sm");
-          card.dataset.postId = p.ID; // store id for easy removal later
+          card.dataset.postId = p.ID;
 
           const h = el("h4", "mb-2", p.postTitle || "(Untitled)");
-          const meta = el("div", "text-muted mb-2", ""); // no createdAt
-          const body = el("p", "mb-3", p.postDescription || "");
+          const body = el("p", "mb-3", truncate(p.postDescription || "", 240));
 
           const actions = el("div", "d-flex gap-2");
           const view = el("a", "btn viewPostButton text-white", "View Post");
-          view.href = `/Frontend/DedicatedPage.html?id=${encodeURIComponent(p.ID)}`;
+          // Link locally to DedicatedPage.html (no /Frontend prefix)
+          view.href = `./DedicatedPage.html?id=${encodeURIComponent(p.ID)}`;
 
           const del = el("button", "btn btn-outline-danger", "Delete");
           del.addEventListener("click", () => onDelete(p.ID, card));
 
           actions.append(view, del);
-          card.append(h, meta, body, actions);
+          card.append(h, body, actions);
           listEl.appendChild(card);
         });
       } catch (e) {
@@ -113,8 +119,7 @@ const API_BASE = "https://mydiary-backend.onrender.com";
         return;
       }
 
-      const ok = confirm("Delete this post? This action cannot be undone.");
-      if (!ok) return;
+      if (!confirm("Delete this post? This action cannot be undone.")) return;
 
       try {
         const url = `${API_BASE}/post/${encodeURIComponent(postId)}?userID=${encodeURIComponent(userID)}`;
@@ -124,9 +129,7 @@ const API_BASE = "https://mydiary-backend.onrender.com";
           alert(`Failed to delete (${resp.status}): ${text}`);
           return;
         }
-        // Optimistic UI: remove from DOM
         cardEl.remove();
-        // If list becomes empty, show hint
         const listEl = document.getElementById("allPosts");
         if (listEl.children.length === 0) {
           document.getElementById("status").textContent = "No posts yet—create one!";

@@ -15,13 +15,14 @@
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
     .post-card { max-width: 900px; width: 100%; border-radius: 1rem; }
+    pre.wrap { white-space: pre-wrap; word-wrap: break-word; }
   </style>
 </head>
 
 <body class="container d-flex flex-column align-items-center py-4">
   <div class="w-100 d-flex justify-content-between align-items-center mb-3" style="max-width: 900px">
-    <a href="/Frontend/FeedPage.html" class="btn btn-link ps-0">&larr; Back to Feed</a>
-    <a href="/Frontend/Post.html" class="btn btn-primary">New Post</a>
+    <a href="./FeedPage.html" class="btn btn-link ps-0">&larr; Back to Feed</a>
+    <a href="./Post.html" class="btn btn-primary">New Post</a>
   </div>
 
   <div id="status" class="text-muted mb-3 w-100" style="max-width: 900px">Loading...</div>
@@ -40,12 +41,10 @@
   ></script>
 
   <script>
+    // Match Feed/Post pages
     const API_BASE = "http://localhost:3000";
 
-    function qsId() {
-      const u = new URL(location.href);
-      return u.searchParams.get("id");
-    }
+    const qsId = () => new URL(location.href).searchParams.get("id");
 
     function escapeHTML(str = "") {
       return String(str)
@@ -79,11 +78,11 @@
         status.textContent = "";
 
         const title = escapeHTML(p.postTitle || "(Untitled)");
-        const bodyHtml = escapeHTML(p.postDescription || "").replace(/\n/g, "<br>");
+        const bodySafe = escapeHTML(p.postDescription || "");
 
         container.innerHTML = `
-          <h2 class="mb-2">${title}</h2>
-          <div class="fs-5">${bodyHtml}</div>
+          <h2 class="mb-3">${title}</h2>
+          <pre class="wrap fs-5 mb-0">${bodySafe}</pre>
         `;
       } catch (e) {
         console.error(e);

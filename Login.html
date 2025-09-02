@@ -46,32 +46,45 @@
         integrity="sha384-RuyvpeZCxMJCqVUGFI0Do1mQrods/hhxYlcVfGPOfQtPJh0JCw12tUAZ/Mv10S7D"
         crossorigin="anonymous"></script>
 
-    <script>
-        const form = document.getElementById('loginForm');
+   <script>
+  const form = document.getElementById('loginForm');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            const formData = new URLSearchParams(new FormData(form));
+    // Collect form fields
+    const data = Object.fromEntries(new FormData(form).entries());
 
-            const response = await fetch('http://localhost:3000/userLogin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: formData
-            });
+    try {
+      const response = await fetch('http://localhost:3000/userLogin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
-            console.log(response);
-            let body = await response.json();
-            console.log(body);
-            localStorage.setItem('userID', body.userID);
-            if (response.status == 200) {
-                window.location.href = "/Frontend/FeedPage.html"
-            }
+      // Handle non-200s gracefully
+      const isJson = response.headers.get('content-type')?.includes('application/json');
+      const payload = isJson ? await response.json() : { message: await response.text() };
 
-        });
-    </script>
+      if (!response.ok) {
+        alert(payload.message || `Login failed (${response.status})`);
+        return;
+      }
+
+      if (!payload.userID) {
+        alert('Login succeeded but userID missing in response');
+        return;
+      }
+
+      localStorage.setItem('userID', payload.userID);
+      window.location.href = '/FeedPage.html';
+    } catch (err) {
+      console.error(err);
+      alert('Network or server error. Check the console for details.');
+    }
+  });
+</script>
+
 </body>
 
 </html>
