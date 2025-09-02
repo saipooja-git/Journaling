@@ -52,4 +52,4 @@ Improve user experience with animations and accessibility features
 
 🌐 Live Demo https://journaling-fqhs-git-main-sai-pooja-reddy-palles-projects.vercel.app
 
-🔗 Check it out here
+🔗 Check it out here https://github.com/saipooja-git/Journaling.git
